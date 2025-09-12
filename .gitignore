@@ -27,3 +27,4 @@ instance/
 # Coverage/Reports
 .coverage
 htmlcov/
+!.env.example
