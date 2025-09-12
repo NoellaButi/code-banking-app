@@ -1,0 +1,57 @@
+<!-- list.html -->
+{% extends "base.html" %}
+{% block title %}Transactions · BankLite{% endblock %}
+
+{% block content %}
+<h1>Transactions</h1>
+
+{% if tx and tx|length %}
+  <table style="width:100%; border-collapse:collapse">
+    <thead>
+      <tr>
+        <th style="text-align:left; padding:6px; border-bottom:1px solid var(--border)">#</th>
+        <th style="text-align:left; padding:6px; border-bottom:1px solid var(--border)">When</th>
+        <th style="text-align:left; padding:6px; border-bottom:1px solid var(--border)">Kind</th>
+        <th style="text-align:left; padding:6px; border-bottom:1px solid var(--border)">Account</th>
+        <th style="text-align:right; padding:6px; border-bottom:1px solid var(--border)">Amount</th>
+        <th style="text-align:left; padding:6px; border-bottom:1px solid var(--border)">Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in tx %}
+        {% set acct = (accounts | selectattr('id','equalto', t.account_id) | list | first) %}
+        {% set related = (accounts | selectattr('id','equalto', t.related_account_id) | list | first) if t.related_account_id else None %}
+
+        {# Signed amount: transfer/withdraw = negative; deposit = positive #}
+        {% set is_negative = (t.kind == 'transfer') or (t.kind == 'withdraw') %}
+        {% set sign = '-' if is_negative else '+' %}
+        {% set amount_str = "{:,.2f}".format(t.amount|float) %}
+
+        <tr>
+          <td style="padding:6px; border-bottom:1px solid var(--border)">{{ t.id }}</td>
+          <td style="padding:6px; border-bottom:1px solid var(--border)">{{ t.created_at.strftime('%Y-%m-%d %H:%M') if t.created_at else '—' }}</td>
+          <td style="padding:6px; border-bottom:1px solid var(--border)">{{ t.kind }}</td>
+          <td style="padding:6px; border-bottom:1px solid var(--border)">{{ acct.name if acct else ('#' ~ t.account_id) }}</td>
+          <td style="padding:6px; border-bottom:1px solid var(--border); text-align:right; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;">
+            <span class="{{ 'money-neg' if is_negative else 'money-pos' }}">{{ sign }}{{ amount_str }}</span>
+          </td>
+          <td style="padding:6px; border-bottom:1px solid var(--border)">
+            {% if t.kind == 'transfer' %}
+              {{ (acct.name if acct else ('#' ~ t.account_id)) }} → {{ (related.name if related else ('#' ~ t.related_account_id)) }}
+              {% if t.description %} — {{ t.description }}{% endif %}
+            {% elif t.kind == 'deposit' and t.related_account_id %}
+              From {{ related.name if related else ('#' ~ t.related_account_id) }}
+            {% elif t.kind == 'withdraw' and t.related_account_id %}
+              To {{ related.name if related else ('#' ~ t.related_account_id) }}
+            {% else %}
+              {{ t.description or '—' }}
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No transactions yet.</p>
+{% endif %}
+{% endblock %}

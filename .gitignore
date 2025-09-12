@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+.env
+.env.*
+
+# Editors/OS
+.idea/
+.vscode/
+.DS_Store
+
+# Local data
+banklite.db
+instance/
+*.sqlite
+*.sqlite3
+
+# Coverage/Reports
+.coverage
+htmlcov/
+
+# If you want Alembic migration history in git, keep this:
+# (recommended) include migrations/, but ignore the SQLite DB above

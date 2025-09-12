@@ -1,0 +1,40 @@
+<!-- index.html -->
+{% extends "base.html" %}
+{% block title %}Dashboard · BankLite{% endblock %}
+
+{% block content %}
+<header style = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+    <h1>Your Account</h1>
+    <div>
+        <a class = "btn" href = "{{ url_for('main.new_account') }}">+ New Account</a>
+        <a class = "btn" href = "{{ url_for('main.transfer_view') }}">Transfer</a>
+        <a class = "btn" href = "{{ url_for('main.transactions_list') }}">All Transactions</a>
+    </div>
+    </header>
+
+{% if accounts %}
+<div class = "grid">
+    {% for a in accounts %}
+    <article class = "card">
+        <header class = "card-head">
+            <h2 class = "card-title">{{ a.name }}</h2>
+            <span class = "badge">{{ a.type }}</span>
+            </header>
+
+        <div class = "card-body">
+            <div class = "balance">
+                <div class = "label">Balance</div>
+                <div class = "value mono">{{ "{:,.2f}".format(a.balance|float) }}</div>
+            </div>
+            <div class = "meta">
+                <div>ID: {{ a.id }}</div>
+                <div>Opened {{ a.created_at.strftime('%Y-%m-%d') if a.created_at else "-" }}</div>
+            </div>
+        </div>
+        </article>
+    {% endfor %}
+</div>
+{% else %}
+<p>No accounts yet. <a href = "{{ url_for('main.new_account') }}">Create your first one</a></p>
+{% endif %}
+{% endblock %}

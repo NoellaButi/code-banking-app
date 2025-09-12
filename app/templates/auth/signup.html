@@ -1,0 +1,14 @@
+<!-- signup.html -->
+{% extends "base.html" %}
+{% block title %}Sign up · BankLite{% endblock %}
+{% block content %}
+<h1>Sign up</h1>
+<form method="post" action="{{ url_for('auth.signup') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  <p><label>Email <input type="email" name="email" required></label></p>
+  <p><label>Password <input type="password" name="password" required></label></p>
+  <button class="btn primary" type="submit">Create account</button>
+</form>
+<p>Already have one? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+{% endblock %}

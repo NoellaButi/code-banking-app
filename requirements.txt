@@ -1,0 +1,19 @@
+# core
+flask==3.0.3
+flask_sqlalchemy==3.1.1
+flask_login==0.6.3
+flask_wtf==1.2.2
+flask_migrate==4.0.7
+
+# postgres driver (psycopg3)
+psycopg[binary]==3.2.3
+
+# config / serialization
+python-dotenv==1.0.1
+marshmallow==3.21.3
+marshmallow-sqlalchemy==1.1.0
+
+# dev/test
+pytest==8.3.2
+pytest-cov==5.0.0
+ruff==0.6.9

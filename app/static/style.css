@@ -1,0 +1,79 @@
+/* style.css */
+/* ===== Dark + Pink theme ===== */
+:root{
+  --bg:#0b1220;          /* page background */
+  --surface:#111827;     /* cards/main */
+  --border:#1f2937;      /* subtle borders */
+  --text:#e5e7eb;        /* primary text */
+  --muted:#9ca3af;       /* secondary text */
+  --accent:#F75C7E;      /* pink */
+  --accent-ink:#ffffff;  /* text on accent */
+  --good:#22c55e;        /* success */
+  --bad:#ef4444;         /* error */
+  --info:#38bdf8;        /* info */
+}
+
+/* ===== Base ===== */
+*{ box-sizing:border-box }
+body{
+  font-family:system-ui,"Segoe UI",Arial,sans-serif;
+  background:var(--bg); color:var(--text);
+  max-width:960px; margin:2rem auto; padding:0 1rem;
+}
+
+/* ===== Nav ===== */
+.nav{
+  display:flex; justify-content:space-between; align-items:center;
+  gap:.75rem; margin-bottom:1rem; padding:.5rem .75rem;
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+}
+.nav a, .nav button.linklike{
+  text-decoration:none; padding:.45rem .7rem;
+  border:1px solid var(--border); border-radius:8px;
+  color:var(--accent); background:transparent; cursor:pointer; font:inherit;
+}
+.nav a:hover, .nav button.linklike:hover{
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* ===== Main/card ===== */
+main{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:1rem;
+}
+
+/* ===== Buttons/helpers ===== */
+.btn{
+  display:inline-block; padding:.5rem .8rem; border-radius:10px;
+  border:1px solid var(--accent); color:var(--accent);
+  background:transparent; text-decoration:none;
+}
+.btn:hover{ background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.btn.primary{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+.btn.primary:hover{ filter:brightness(1.05); }
+.inline-form{ display:inline }
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+/* ===== Grid + Cards ===== */
+.grid{ display:grid; gap:16px; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)) }
+.card{ background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px }
+.card .badge{ font-size:.8rem; padding:2px 8px; border-radius:999px; border:1px solid var(--border); color:var(--muted); }
+.mono{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace }
+
+/* ===== Flash messages ===== */
+.flash-container{ margin:16px 0 }
+.flash{ padding:10px 12px; border-radius:10px; margin-bottom:8px; background:var(--surface); border:1px solid var(--border); }
+.flash-success{ border-color:color-mix(in srgb, var(--good) 50%, var(--border)); color:var(--good) }
+.flash-error{ border-color:color-mix(in srgb, var(--bad) 50%, var(--border)); color:var(--bad) }
+.flash-info{ border-color:color-mix(in srgb, var(--info) 50%, var(--border)); color:var(--info) }
+
+/* ===== Links ===== */
+a{ color:var(--accent) } a:hover{ opacity:.9 }
+
+/* Money helpers */
+.money-pos{ color:var(--good) } .money-neg{ color:var(--bad) }
