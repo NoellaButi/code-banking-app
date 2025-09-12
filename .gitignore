@@ -27,6 +27,3 @@ instance/
 # Coverage/Reports
 .coverage
 htmlcov/
-
-# If you want Alembic migration history in git, keep this:
-# (recommended) include migrations/, but ignore the SQLite DB above
