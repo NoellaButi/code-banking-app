@@ -1,12 +1,12 @@
-# render.yaml — Blueprint for NoellaButi/code-banking-app
+# render.yaml
 
 services:
   - type: web
     name: banklite-web
-    runtime: python
+    env: python          # use 'env' (older but widely supported)
     plan: free
     branch: main
-    autoDeployTrigger: commit
+    autoDeploy: true
     region: oregon
 
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
