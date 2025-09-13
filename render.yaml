@@ -1,12 +1,12 @@
-# render.yaml
+# render.yaml — minimal & compatible
 
 services:
   - type: web
     name: banklite-web
-    env: python          
+    env: python
     plan: free
     branch: main
-    autoDeploy: true      
+    autoDeploy: true
     region: oregon
 
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
