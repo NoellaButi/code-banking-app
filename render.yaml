@@ -3,22 +3,20 @@
 services:
   - type: web
     name: banklite-web
-    runtime: python          # (newer field; replaces deprecated 'env')
+    runtime: python
     plan: free
     branch: main
     autoDeployTrigger: commit
-    region: oregon           # keep app & DB in same region
+    region: oregon
 
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn app.wsgi:app
-    preDeployCommand: flask db upgrade   # run migrations before starting
 
     envVars:
       - key: FLASK_APP
         value: app.wsgi:app
       - key: SECRET_KEY
         generateValue: true
-      # Wire DB URL from the database defined below
       - key: SQLALCHEMY_DATABASE_URI
         fromDatabase:
           name: banklite-db
@@ -28,6 +26,3 @@ databases:
   - name: banklite-db
     plan: free
     region: oregon
-    # optional extras:
-    # postgresMajorVersion: '17'
-    # ipAllowList: []  # only allow private/internal connections
