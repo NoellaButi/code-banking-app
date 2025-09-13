@@ -3,10 +3,10 @@
 services:
   - type: web
     name: banklite-web
-    env: python          # use 'env' (older but widely supported)
+    env: python          
     plan: free
     branch: main
-    autoDeploy: true
+    autoDeploy: true      
     region: oregon
 
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
