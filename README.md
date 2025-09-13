@@ -51,7 +51,10 @@ code-banking-app/
 
 ## 🚀 Quickstart (Local Dev)
 
-Requirements: Python 3.11+, pip
+Requirements: 
+```bash
+Python 3.11+, pip
+```
 
 Windows (PowerShell)
 ```powershell
