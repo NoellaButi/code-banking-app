@@ -1,49 +1,33 @@
 # render.yaml — Blueprint for NoellaButi/code-banking-app
+
 services:
-  # --- Web app (Flask + Gunicorn) ---
   - type: web
     name: banklite-web
-    env: python
+    runtime: python          # (newer field; replaces deprecated 'env')
     plan: free
     branch: main
-    autoDeploy: true
+    autoDeployTrigger: commit
+    region: oregon           # keep app & DB in same region
 
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn app.wsgi:app
-
-    # Optional: if you didn't add runtime.txt
-    # pythonVersion: 3.11.9
-
-    # If you add a simple /ping route later, you can enable:
-    # healthCheckPath: /ping
+    preDeployCommand: flask db upgrade   # run migrations before starting
 
     envVars:
-      # Generate a strong secret in Render
-      - key: SECRET_KEY
-        generateValue: true
-
-      # Flask needs this to find your app for migrations/CLI
       - key: FLASK_APP
         value: app.wsgi:app
-
-      # Prefer Postgres in production
-      - key: DATABASE_URL
-        fromDatabase:
-          name: banklite-db
-          property: connectionString
-
-      # SQLAlchemy will read this (keep it equal to DATABASE_URL)
+      - key: SECRET_KEY
+        generateValue: true
+      # Wire DB URL from the database defined below
       - key: SQLALCHEMY_DATABASE_URI
         fromDatabase:
           name: banklite-db
           property: connectionString
 
-    # Run migrations automatically after each deploy
-    postDeployCommand: flask db upgrade
-
-  # --- Managed Postgres database ---
-  - type: postgresql
-    name: banklite-db
+databases:
+  - name: banklite-db
     plan: free
-    # If you need to allow external IPs to connect, add:
-    # ipAllowList: []
+    region: oregon
+    # optional extras:
+    # postgresMajorVersion: '17'
+    # ipAllowList: []  # only allow private/internal connections
