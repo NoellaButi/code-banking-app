@@ -1,10 +1,20 @@
-﻿from __future__ import annotations
+﻿# wsgi.py
+from __future__ import annotations
 import os
 from app import create_app
+from flask_migrate import upgrade
 
 app = create_app()
 
-if __name__ == '__main__':
+# --- Run migrations automatically on startup ---
+with app.app_context():
+    try:
+        upgrade()
+        print("Database upgraded on startup")
+    except Exception as e:
+        print(f"Could not run migrations: {e}")
+
+if __name__ == "__main__":
     app.run(
         host=os.getenv("FLASK_RUN_HOST", "127.0.0.1"),
         port=int(os.getenv("FLASK_RUN_PORT", "5000")),
