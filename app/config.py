@@ -2,14 +2,16 @@
 import os
 
 class Config:
-    # Secret key for sessions and CSRF protection
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
+    SECRET_KEY = os.getenv("SECRET_KEY", "dev")
 
-    # Prefer DATABASE_URL (Render/Railway/Heroku), else fallback, else local SQLite
-    SQLALCHEMY_DATABASE_URI = (
-        os.getenv("DATABASE_URL")
-        or os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///banklite.db")
-    )
+    uri = os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///banklite.db")
 
-    # Disable modification tracking overhead
+    # Normalize to SQLAlchemy 2 + psycopg3
+    if uri.startswith("postgres://"):
+        uri = uri.replace("postgres://", "postgresql+psycopg://", 1)
+    elif uri.startswith("postgresql://"):
+        uri = uri.replace("postgresql://", "postgresql+psycopg://", 1)
+
+    SQLALCHEMY_DATABASE_URI = uri
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}

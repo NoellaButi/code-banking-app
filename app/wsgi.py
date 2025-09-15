@@ -1,5 +1,4 @@
-# wsgi.py
-from __future__ import annotations
+﻿from __future__ import annotations
 import os
 from app import create_app
 

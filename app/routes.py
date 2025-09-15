@@ -1,6 +1,4 @@
-# routes.py (HTML views)
-from __future__ import annotations
-
+﻿from __future__ import annotations
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
@@ -10,6 +8,7 @@ from .services import create_account, deposit, withdraw, transfer
 
 bp = Blueprint("main", __name__)
 
+# Health check (no auth)
 @bp.route("/ping")
 def ping():
     return "ok", 200
@@ -67,7 +66,6 @@ def transfer_view():
         src = Account.query.get_or_404(src_id)
         dst = Account.query.get_or_404(dst_id)
 
-        # Ensure both accounts belong to the logged-in user
         if src.user_id != current_user.id or dst.user_id != current_user.id:
             flash("You can only transfer between your own accounts.", "error")
             return redirect(url_for("main.transfer_view"))
@@ -76,9 +74,7 @@ def transfer_view():
             flash("Choose two different accounts.", "error")
             return redirect(url_for("main.transfer_view"))
 
-        # Perform atomic transfer
         transfer(src, dst, amount, description="User transfer")
-
         flash("Transfer complete.", "success")
         return redirect(url_for("main.transactions_list"))
 
