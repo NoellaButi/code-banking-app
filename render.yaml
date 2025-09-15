@@ -1,5 +1,4 @@
-# render.yaml — minimal & compatible
-
+# render.yaml
 services:
   - type: web
     name: banklite-web
@@ -8,10 +7,8 @@ services:
     branch: main
     autoDeploy: true
     region: oregon
-
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn app.wsgi:app
-
     envVars:
       - key: FLASK_APP
         value: app.wsgi:app
