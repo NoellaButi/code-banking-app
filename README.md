@@ -34,6 +34,7 @@ code-banking-app/
 │  ├─ routes.py             # HTML pages (dashboard, forms)
 │  ├─ api.py                # JSON API endpoints
 │  ├─ schemas.py            # Marshmallow schemas
+│  ├─ wsgi.py               # gunicorn entrypoint (inside app/)
 │  ├─ templates/
 │  │  ├─ base.html
 │  │  ├─ index.html
@@ -45,13 +46,12 @@ code-banking-app/
 ├─ .env.example             # sample env (copy to .env)
 ├─ .gitignore
 ├─ requirements.txt
-├─ wsgi.py                  # gunicorn entrypoint
 └─ README.md
 ```
 
 ## 🚀 Quickstart (Local Dev)
 
-Requirements: 
+Requirements:
 ```bash
 Python 3.11+, pip
 ```
@@ -64,8 +64,8 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 
 copy .env.example .env
-$env:FLASK_APP = "app"
-# (Flask 3.x) Optional: $env:FLASK_DEBUG = "1"
+$env:FLASK_APP = "app.wsgi:app"
+# Optional: $env:FLASK_DEBUG = "1"
 
 # Database (SQLite file: banklite.db)
 flask db init           # first time only
@@ -84,7 +84,7 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 
 cp .env.example .env
-export FLASK_APP=app
+export FLASK_APP=app.wsgi:app
 # Optional: export FLASK_DEBUG=1
 
 flask db init           # first time only
@@ -96,7 +96,6 @@ flask run
 ```
 
 ## 🧭 Demo Walkthrough
-
 - Visit /auth/signup → create a user
 - Log in at /auth/login
 - Create accounts at /accounts/new (e.g., Checking with 100.00)
@@ -104,7 +103,6 @@ flask run
 - View /transactions to see the ledger (transfer shows as debit+credit rows)
 
 ## 🔌 API (JSON)
-
 Auth is cookie-based (log in via the form first). Example calls assume an authenticated session.
 
 List accounts
@@ -176,38 +174,94 @@ SQLALCHEMY_DATABASE_URI=sqlite:///banklite.db
 
 # Production (Render/Railway/Heroku):
 # DATABASE_URL=postgresql+psycopg://user:pass@host:5432/dbname
-app/config.py prefers DATABASE_URL if present, otherwise falls back to SQLALCHEMY_DATABASE_URI, else sqlite:///banklite.db.
 ```
 
-## 🚢 Deploy
+## 🚢 Deploy (Render) — Step-by-Step
+✅ This repo already includes render.yaml and app/wsgi.py auto-running migrations on startup, so you don’t need shell access on the free tier.
 
-- WSGI: gunicorn app.wsgi:app
-- DB: set DATABASE_URL to Postgres
-- Run migrations once on boot: flask db upgrade
-- Set SECRET_KEY in the environment
-
-Example Proc/Start (platform-dependent):
-```css
-gunicorn --workers 2 --timeout 120 app.wsgi:app
+Option A — Blueprint (recommended, one click for Web + Postgres)
+1. Push repo to GitHub (main branch).
+2. In Render → Blueprints → New from Blueprint
+   - Repo: `NoellaButi/code-banking-app`
+   - Branch: `main`
+   - Blueprint name: e.g., `noellabuti-code-banking-app-blueprint`
+3. Review render.yaml and click Deploy Blueprint.
+   Render will create:
+   - banklite-db (Postgres, free)
+   - banklite-web (Python web service, free)
+4. Wait until banklite-web shows Live.
+5. Health check → open:
+```arduino
+https://banklite-web.onrender.com/ping
+```
+(returns ok)
+6. Open the app:
+```arduino
+https://banklite-web.onrender.com/
 ```
 
-## 🧭 Notes & Pitfalls
+Blueprint config
+- Build: `pip install --upgrade pip && pip install -r requirements.txt`
+- Start: `gunicorn app.wsgi:app`
+- Env vars:
+  - `FLASK_APP=app.wsgi:app`
+  - `SECRET_KEY (generated)`
+  - `SQLALCHEMY_DATABASE_URI` (auto-wired to Postgres)
+- Migrations: auto-run on startup via app/wsgi.py.
 
-- Use Decimal semantics for money (DB column is Numeric(12,2)).
-- Transfers are atomic and recorded as two entries (debit+credit).
-- Protect all POST forms with CSRF (<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">).
-- Enforce ownership on every operation: only act on the current user’s accounts.
-- On SQLite, row locks are limited; on Postgres we use SELECT ... FOR UPDATE when available.
+Option B — Manual Web Service + Database
+
+1. Create a Web Service from repo.
+   - Runtime: **Python**
+   - Build: `pip install --upgrade pip && pip install -r requirements.txt`
+   - Start: `gunicorn app.wsgi:app`
+   - Add env: `SECRET_KEY=some-random-string`
+2. Create Postgres DB (free).
+   - In service → **Environment** → set:
+     ```ini
+     SQLALCHEMY_DATABASE_URI=${DATABASE_URL}
+     ```
+     (from Render dropdown)
+3. Deploy → check `/ping` → open `/.`
+
+Option C — SQLite (demo only)
+
+1. In service → Environment → set
+   ```ini
+   SQLALCHEMY_DATABASE_URI=sqlite:///banklite.db
+   ```
+2. Deploy → app will use SQLite.
+3. Switch to Postgres later by removing override.
+
+---
+
+Shipping updates
+- Code changes → push to main → auto-deploy.
+- Schema changes → run locally:
+  ```bash
+  flask db migrate -m "add something"
+  flask db upgrade
+  git add migrations
+  git commit -m "migrations: add something"
+  git push origin main
+  ```
+  Render redeploys → app/wsgi.py auto-applies migrations.
+
+Notes
+- Free tier spins down after inactivity (~30–60s cold start).
+- Region oregon.
+- Starter plan ($7/mo) unlocks shell, persistent disks, zero downtime.
+
+---
 
 ## 🔮 Roadmap
-
 - JWT for API clients
 - Pagination/filters on transactions
 - CSV export of statements
 - Admin role
 - Docker Compose (app + Postgres)
 
-## 📜 License
+📜 License
 MIT (see [LICENSE](LICENSE))
 
 ---
