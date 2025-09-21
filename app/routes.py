@@ -1,8 +1,9 @@
-﻿from __future__ import annotations
+# routes.py
+from __future__ import annotations
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
-from .extensions import db
+# removed: from .extensions import db  (unused)
 from .models import Account, Transaction
 from .services import create_account, deposit, withdraw, transfer
 
