@@ -10,14 +10,6 @@ Minimal banking demo with **Flask + SQLAlchemy**, authentication, HTML views, an
 
 👉 [**Live Demo (Render)**](https://banklite-web.onrender.com/auth/login?next=%2F) 
 
-
-
-
-
-
-
-
-
 [🖼️ Screenshot](app/demo/banklite-app-demo.png)
 
 ---
