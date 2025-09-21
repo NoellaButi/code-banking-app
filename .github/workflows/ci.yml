@@ -19,20 +19,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Set CI env (SQLite)
+      - name: Set testing env
         run: |
           echo "FLASK_APP=app.wsgi:app" >> $GITHUB_ENV
-          echo "FLASK_DEBUG=0" >> $GITHUB_ENV
           echo "SECRET_KEY=test-secret" >> $GITHUB_ENV
           echo "SQLALCHEMY_DATABASE_URI=sqlite:///test.db" >> $GITHUB_ENV
+          echo "WTF_CSRF_ENABLED=0" >> $GITHUB_ENV
+          echo "RUN_DB_MIGRATIONS=0" >> $GITHUB_ENV
+          echo "PYTHONWARNINGS=default" >> $GITHUB_ENV
 
-      # If your tests require tables, create them. This avoids needing 'flask db upgrade' in CI.
-      - name: Prepare DB (create tables)
+      - name: Prepare DB (create tables, no Alembic)
         run: |
           python - <<'PY'
           import os
           os.environ.setdefault("FLASK_APP","app.wsgi:app")
           os.environ.setdefault("SQLALCHEMY_DATABASE_URI","sqlite:///test.db")
+          os.environ.setdefault("WTF_CSRF_ENABLED","0")
+          os.environ.setdefault("RUN_DB_MIGRATIONS","0")
           from app.wsgi import app
           from app.extensions import db
           with app.app_context():
