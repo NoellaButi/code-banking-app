@@ -64,6 +64,7 @@ code-banking-app/
 │  ├─ api.py           # JSON API endpoints
 │  ├─ routes.py        # HTML routes
 │  └─ templates/       # Jinja2 templates
+├─ docs/               # banklite_app_demo.png
 ├─ migrations/         # Alembic migrations
 ├─ tests/              # pytest tests
 ├─ .env.example        # sample config
