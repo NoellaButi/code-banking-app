@@ -75,9 +75,6 @@ code-banking-app/
 - Deployed on Render (Postgres + Gunicorn)
 - Verified migrations auto-run on startup
 
-## ✅ Live demo accessible:
-👉 https://banklite-web.onrender.com/auth/login?next=%2F
-
 ## 🔮 Roadmap
 - JWT support for API clients
 - CSV export of transactions
