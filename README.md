@@ -8,7 +8,9 @@ Minimal banking demo with **Flask + SQLAlchemy**, authentication, HTML views, an
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![CI](https://github.com/NoellaButi/code-banking-app/actions/workflows/ci.yml/badge.svg)
 
-👉 [**Live Demo (Render)**](https://banklite-web.onrender.com/auth/login?next=%2F) · [🖼️ Screenshot](docs/login.png)
+👉 [**Live Demo (Render)**](https://banklite-web.onrender.com/auth/login?next=%2F) 
+
+[🖼️ Screenshot](docs/login.png)
 
 ---
 
