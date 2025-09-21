@@ -74,7 +74,7 @@ code-banking-app/
 - Verified migrations auto-run on startup
 
 ## ✅ Live demo accessible:
-👉 [**Live Demo (Render)**](https://banklite-web.onrender.com/auth/login?next=%2F) 
+👉 [**Click Here**](https://banklite-web.onrender.com/auth/login?next=%2F) 
 
 ## 🔮 Roadmap
 - JWT support for API clients
