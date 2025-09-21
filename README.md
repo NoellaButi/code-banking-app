@@ -8,6 +8,8 @@ Minimal banking demo with **Flask + SQLAlchemy**, authentication, HTML views, an
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![CI](https://github.com/NoellaButi/code-banking-app/actions/workflows/ci.yml/badge.svg)
 
+👉 [**Live Demo (Render)**](https://banklite-web.onrender.com/auth/login?next=%2F) 
+
 ![BankLite Login Page](app/demo/banklite-app-demo.png)
 
 ---
@@ -74,7 +76,7 @@ code-banking-app/
 - Verified migrations auto-run on startup
 
 ## ✅ Live demo accessible:
-👉 [**Click Here**](https://banklite-web.onrender.com/auth/login?next=%2F) 
+👉 https://banklite-web.onrender.com/auth/login?next=%2F
 
 ## 🔮 Roadmap
 - JWT support for API clients
