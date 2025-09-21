@@ -5,20 +5,21 @@ from flask import Blueprint, jsonify, request, abort
 from flask_login import login_required, current_user
 from marshmallow import ValidationError
 
-from .extensions import db, csrf
+from .extensions import csrf  # removed: db (unused)
 from .models import Account, Transaction
 from .services import create_account, deposit, withdraw, transfer
 from .schemas import (
-account_schema,
-accounts_schema,
-account_create_schema,
-transaction_schema,
-transactions_schema,
-transaction_create_schema,
+    account_schema,
+    accounts_schema,
+    account_create_schema,
+    transaction_schema,
+    transactions_schema,
+    transaction_create_schema,
 )
 
-bp = Blueprint("api", __name__, url_prefix = "/api")
-csrf.exempt(bp)     # JSON API: skip CSRF tokens on POST/PUT/PATCH/DELETE
+bp = Blueprint("api", __name__, url_prefix="/api")
+csrf.exempt(bp)  # JSON API: skip CSRF tokens on POST/PUT/PATCH/DELETE
+
 
 # ------------ Helpers ------------
 @bp.errorhandler(ValidationError)
@@ -35,8 +36,9 @@ def _ensure_owner(account: Account) -> None:
 @bp.get("/accounts")
 @login_required
 def list_accounts():
-    accounts = Account.query.filter_by(user_id = current_user.id).all()
+    accounts = Account.query.filter_by(user_id=current_user.id).all()
     return jsonify(accounts_schema.dump(accounts))
+
 
 @bp.post("/accounts")
 @login_required
@@ -55,7 +57,7 @@ def create_account_api():
 @bp.get("/transactions")
 @login_required
 def list_transactions():
-    ids = [a.id for a in Account.query.filter_by(user_id = current_user.id).all()]
+    ids = [a.id for a in Account.query.filter_by(user_id=current_user.id).all()]
     tx = (
         Transaction.query.filter(Transaction.account_id.in_(ids))
         .order_by(Transaction.created_at.desc())
@@ -63,7 +65,8 @@ def list_transactions():
     )
     return jsonify(transactions_schema.dump(tx))
 
-@bp.post("/transactions")
+
+@bp.post("/transactions/deposit")
 @login_required
 def deposit_api():
     data = request.get_json() or {}
@@ -79,8 +82,9 @@ def deposit_api():
     account = Account.query.get_or_404(payload["account_id"])
     _ensure_owner(account)
 
-    t = deposit(account, payload["amount"], description = payload.get("description", ""))
+    t = deposit(account, payload["amount"], description=payload.get("description", ""))
     return jsonify(transaction_schema.dump(t)), 201
+
 
 @bp.post("/transactions/withdraw")
 @login_required
@@ -98,8 +102,9 @@ def withdraw_api():
     account = Account.query.get_or_404(payload["account_id"])
     _ensure_owner(account)
 
-    t = withdraw(account, payload["amount"], description = payload.get("description", ""))
+    t = withdraw(account, payload["amount"], description=payload.get("description", ""))
     return jsonify(transaction_schema.dump(t)), 201
+
 
 @bp.post("/transactions/transfer")
 @login_required
@@ -120,5 +125,5 @@ def transfer_api():
     _ensure_owner(src)
     _ensure_owner(dst)
 
-    t = transfer(src, dst, payload["amount"], description = payload.get("description", ""))
+    t = transfer(src, dst, payload["amount"], description=payload.get("description", ""))
     return jsonify(transaction_schema.dump(t)), 201
