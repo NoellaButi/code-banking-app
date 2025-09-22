@@ -83,6 +83,6 @@ code-banking-app/
 - Docker Compose setup
 
 ## 📜 License
-MIT (see LICENSE)
+MIT (see [LICENSE](LICENSE))
 
 ---
